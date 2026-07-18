@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reading — [Your Name]</title>
+<script>try{if(localStorage.getItem("otr-theme")==="night")document.documentElement.classList.add("night")}catch(e){}</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27 fill=%27%238E2F22%27%3E%C2%A7%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,430;0,9..144,500;0,9..144,560;0,9..144,600;1,9..144,430;1,9..144,500&family=Space+Grotesk:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="grain"></div>
+<div class="prog"><i id="progBar"></i></div>
+<header>
+  <a class="wm" href="index.html"><span class="nm">[Your Name]</span><span class="role">Human Rights Officer</span></a>
+  <nav class="main">
+    <a href="index.html#brief">Brief</a>
+    <a href="index.html#practice">Practice</a>
+    <a href="index.html#docket">Docket</a>
+    <a href="blog.html">Commentary</a>
+    <a href="fiction.html">Fiction</a>
+    <a href="index.html#reach">Contact</a>
+  </nav>
+  <div class="hbtns">
+    <button class="thm" aria-label="Toggle night mode"></button>
+    <button class="burger" aria-label="Menu"><i></i><i></i></button>
+  </div>
+</header>
+<div class="mnav">
+  <a href="index.html#brief">Brief</a>
+  <a href="index.html#practice">Practice</a>
+  <a href="index.html#docket">Docket</a>
+  <a href="blog.html">Commentary</a>
+  <a href="fiction.html">Fiction</a>
+  <a href="index.html#reach">Contact</a>
+</div>
+
+<div class="pagehead" style="max-width:720px">
+  <div class="no" id="rKicker">&#8230;</div>
+  <h1 id="rTitle" style="font-size:clamp(34px,5.6vw,64px)">Opening the file&#8230;</h1>
+</div>
+<article class="post">
+  <div class="meta" id="rMeta"></div>
+  <div id="rBody"><p style="color:var(--muted)">Fetching the manuscript&#8230;</p></div>
+</article>
+<div id="rNext"></div>
+
+<footer class="fine">
+  <span>&#169; 2026 [Your Name] &#183; Kathmandu, Nepal</span>
+  <span class="disc">Views expressed on this site are personal and do not represent the National Human Rights Commission of Nepal.</span>
+  <span><a href="mailto:hello@example.com">Email</a> &nbsp;/&nbsp; <a href="#">LinkedIn</a> &nbsp;/&nbsp; <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></span>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var slug=new URLSearchParams(location.search).get("slug");
+  var body=document.getElementById("rBody");
+  function fail(msg){
+    body.innerHTML='<p style="color:var(--muted)">'+msg+
+    ' If you opened this file directly from disk, run a local server (<code>python3 -m http.server</code>) or host the folder — browsers block reading local files.</p>';
+  }
+  if(!slug){fail("No post specified.");return;}
+  fetch("content/posts.json",{cache:"no-store"}).then(function(r){return r.json();}).then(function(posts){
+    var i=posts.findIndex(function(p){return p.slug===slug;});
+    if(i<0){fail("Post not found in the index.");return;}
+    var p=posts[i];
+    document.title=p.title+" — [Your Name]";
+    document.getElementById("rKicker").textContent=(p.type||p.kind)+" · "+fmtDate(p.date);
+    var t=document.getElementById("rTitle");t.textContent=p.title;
+    var isPoem=(p.type||"").toLowerCase()==="poem";
+    document.getElementById("rMeta").innerHTML=
+      "<span>"+(p.minutes||"—")+" min read</span><span>"+(p.tags||"")+"</span><span>Personal capacity</span>";
+    fetch("content/"+p.kind+"/"+slug+".md",{cache:"no-store"}).then(function(r){return r.text();}).then(function(md){
+      md=md.replace(/^---[\s\S]*?---\n/,"");
+      marked.use({breaks:isPoem,mangle:false,headerIds:false});
+      body.innerHTML=marked.parse(md);
+      if(isPoem)body.classList.add("poem");
+      var first=body.querySelector("p");if(first&&!isPoem)first.classList.add("drop");
+      body.querySelectorAll("blockquote").forEach(function(b){b.className="pull";b.innerHTML=b.innerHTML;});
+      body.querySelectorAll("img").forEach(function(im){
+        var fig=document.createElement("figure");
+        im.parentNode.insertBefore(fig,im);fig.appendChild(im);
+        if(im.alt){var fc=document.createElement("figcaption");fc.textContent=im.alt;fig.appendChild(fc);}
+      });
+      /* prev / next within same kind */
+      var same=posts.filter(function(x){return x.kind===p.kind;});
+      var j=same.findIndex(function(x){return x.slug===slug;});
+      var nxt=same[(j+1)%same.length];
+      if(nxt&&nxt.slug!==slug){
+        document.getElementById("rNext").innerHTML=
+        '<a class="nextp" href="read.html?slug='+nxt.slug+'"><span class="k">Next in '+(p.kind==="fiction"?"the other ink":"the commentary")+'</span><div class="t">'+nxt.title+' &#8594;</div></a>';
+      }
+      if(window.gsap)gsap.from("#rBody > *",{opacity:0,y:18,duration:.7,stagger:.05,ease:"expo.out"});
+    }).catch(function(){fail("Could not load the manuscript.");});
+  }).catch(function(){fail("Could not load the post index.");});
+  function fmtDate(d){try{return new Date(d+"T00:00:00").toLocaleDateString("en-GB",{month:"short",year:"numeric"});}catch(e){return d;}}
+})();
+</script>
+</body>
+</html>

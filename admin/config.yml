@@ -1,0 +1,39 @@
+# Decap CMS configuration — browser-based publishing for blog & fiction.
+# Quickest path: host the repo on GitHub + deploy on Netlify, then enable
+# Identity + Git Gateway (README has the 5 steps).
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "blog"
+    label: "Commentary (blog)"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title",   name: "title",   widget: "string" }
+      - { label: "Kind",    name: "kind",    widget: "hidden", default: "blog" }
+      - { label: "Type",    name: "type",    widget: "select", options: ["Case note","Field note","Commentary","Explainer"] }
+      - { label: "Date",    name: "date",    widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Minutes", name: "minutes", widget: "number", default: 5 }
+      - { label: "Tags",    name: "tags",    widget: "string", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Body",    name: "body",    widget: "markdown" }
+  - name: "fiction"
+    label: "Fiction & verse"
+    folder: "content/fiction"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title",   name: "title",   widget: "string" }
+      - { label: "Kind",    name: "kind",    widget: "hidden", default: "fiction" }
+      - { label: "Type",    name: "type",    widget: "select", options: ["Story","Poem"] }
+      - { label: "Date",    name: "date",    widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Minutes", name: "minutes", widget: "number", default: 3 }
+      - { label: "Tags",    name: "tags",    widget: "string", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text" }
+      - { label: "Body",    name: "body",    widget: "markdown" }

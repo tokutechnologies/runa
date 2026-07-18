@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Accessibility is a right, not a retrofit",
+    "kind": "blog",
+    "type": "Case note",
+    "date": "2026-06-14",
+    "minutes": "7",
+    "tags": "disability rights, Nepal",
+    "excerpt": "Nepal's statutes promise persons with disabilities access to buildings, information and justice. A walk from the statute book to the courtroom door shows how far a promise can be from a ramp.",
+    "slug": "accessibility-is-not-a-retrofit"
+  },
+  {
+    "title": "The Clerk of Small Hours",
+    "kind": "fiction",
+    "type": "Story",
+    "date": "2026-06-02",
+    "minutes": "9",
+    "tags": "short story",
+    "excerpt": "A district court clerk stays late to file one last petition and finds the archive is not entirely made of paper.",
+    "slug": "the-clerk-of-small-hours"
+  },
+  {
+    "title": "What a prison ledger doesn't say",
+    "kind": "blog",
+    "type": "Field note",
+    "date": "2026-05-20",
+    "minutes": "6",
+    "tags": "detention, monitoring",
+    "excerpt": "Monitoring detention means reading the registry \u2014 and then reading the silences between its lines.",
+    "slug": "what-a-prison-ledger-doesnt-say"
+  },
+  {
+    "title": "Monsoon Affidavit",
+    "kind": "fiction",
+    "type": "Poem",
+    "date": "2026-05-08",
+    "minutes": "2",
+    "tags": "poem",
+    "excerpt": "I, the undersigned rain, do solemnly affirm \u2014",
+    "slug": "monsoon-affidavit"
+  },
+  {
+    "title": "The algorithm will see you now",
+    "kind": "blog",
+    "type": "Commentary",
+    "date": "2026-04-18",
+    "minutes": "8",
+    "tags": "AI, digital rights",
+    "excerpt": "AI governance is a human-rights question wearing a technology costume. Notes from the UNESCO panel table.",
+    "slug": "the-algorithm-will-see-you-now"
+  },
+  {
+    "title": "The Last Petition",
+    "kind": "fiction",
+    "type": "Story",
+    "date": "2026-04-02",
+    "minutes": "4",
+    "tags": "flash fiction",
+    "excerpt": "On her final day before retirement, a justice reads one more file than she was given.",
+    "slug": "the-last-petition"
+  }
+]
