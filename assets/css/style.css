@@ -42,8 +42,9 @@ html.night .grain{mix-blend-mode:screen;opacity:.05}
 /* ---------- header ---------- */
 header{position:fixed;top:0;left:0;right:0;z-index:80;height:64px;padding:0 clamp(18px,4vw,44px);
   display:flex;align-items:center;justify-content:space-between;
-  background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line)}
+  background:color-mix(in srgb,var(--paper) 70%,transparent);backdrop-filter:blur(12px);
+  border-bottom:1px solid transparent;transition:border-color .4s,background .4s}
+header.scrolled{border-bottom-color:var(--line);background:color-mix(in srgb,var(--paper) 88%,transparent)}
 .wm{display:flex;align-items:baseline;gap:12px}
 .wm .nm{font-family:var(--disp);font-weight:600;font-size:17px;letter-spacing:.01em}
 .wm .role{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
@@ -69,6 +70,12 @@ body.navopen .mnav{display:flex}
 /* ---------- hero ---------- */
 .hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;
   padding:120px clamp(18px,4vw,44px) 60px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(to bottom,transparent 0 35px,var(--line) 35px 36px);
+  mask-image:linear-gradient(to bottom,transparent,black 18%,black 82%,transparent)}
+.hero .wmk{position:absolute;right:-.06em;bottom:-.22em;font-family:var(--disp);font-weight:600;
+  font-size:clamp(220px,34vw,520px);line-height:1;color:var(--ink);opacity:.045;pointer-events:none;user-select:none}
+html.night .hero .wmk{opacity:.06}
 .hero .filed{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
   display:flex;gap:22px;flex-wrap:wrap;margin-bottom:26px}
 .hero .filed b{color:var(--seal);font-weight:500}
@@ -77,16 +84,21 @@ body.navopen .mnav{display:flex}
 .hero h1 em{font-style:italic;font-weight:430;color:var(--seal)}
 .hero h1 .row{display:block;overflow:hidden}
 .hero h1 .row span{display:inline-block;transform:translateY(112%)}
-.hero .sub{margin-top:30px;max-width:56ch;font-size:clamp(14.5px,1.6vw,17px);color:var(--muted)}
+.hero .sub{margin-top:34px;max-width:58ch;font-size:clamp(14.5px,1.6vw,17px);color:var(--muted)}
 .hero .sub b{color:var(--ink);font-weight:500}
 .hero .now{margin-top:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 .hero .now .rot{display:inline-block;color:var(--seal);min-width:12ch;text-align:left}
-.hero .stamp{position:absolute;right:clamp(16px,6vw,90px);top:120px;
+.hero .stamp{position:absolute;right:clamp(16px,6vw,90px);top:120px;transition:transform .4s cubic-bezier(.34,1.56,.64,1);
   font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--seal);
   border:2px solid var(--seal);padding:10px 14px;transform:rotate(6deg);opacity:.85;
   border-radius:4px;line-height:1.7;text-align:center}
-.hero .scrollcue{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
-  font-family:var(--mono);font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--faint)}
+.hero .stamp:hover{transform:rotate(-2deg) scale(1.04)}
+.hero .scrollcue{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--faint);
+  display:flex;flex-direction:column;align-items:center;gap:8px}
+.hero .scrollcue::after{content:"";width:1px;height:34px;background:var(--faint);
+  animation:cue 1.8s cubic-bezier(.65,0,.35,1) infinite;transform-origin:top}
+@keyframes cue{0%{transform:scaleY(0)}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .hstats{display:flex;gap:clamp(20px,4vw,56px);flex-wrap:wrap;margin-top:52px;padding-top:26px;border-top:1px solid var(--line)}
 .hstat .v{font-family:var(--disp);font-size:clamp(24px,3vw,36px);font-weight:560}
 .hstat .v i{font-style:normal;color:var(--seal)}
@@ -234,8 +246,10 @@ footer.fine .disc{max-width:52ch;text-transform:none;letter-spacing:.04em}
   display:flex;gap:20px;flex-wrap:wrap;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:34px}
 .post p{font-size:17px;line-height:1.85;color:var(--ink);margin-bottom:24px}
 .post p.drop::first-letter{font-family:var(--disp);font-size:66px;float:left;line-height:.78;padding:8px 12px 0 0;color:var(--seal)}
-.post .pull{border-left:3px solid var(--seal);padding:8px 0 8px 24px;margin:36px 0;
-  font-family:var(--disp);font-style:italic;font-weight:430;font-size:clamp(21px,2.8vw,27px);line-height:1.4}
+.post .pull{border-left:3px solid var(--seal);padding:8px 0 8px 24px;margin:36px 0}
+.post .pull p{font-family:var(--disp);font-style:italic;font-weight:430;font-size:clamp(21px,2.8vw,27px);
+  line-height:1.45;color:var(--ink);margin:0}
+.post .pull p+p{margin-top:12px}
 .post h5{font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--seal);margin:38px 0 14px}
 .marg{position:absolute;right:-235px;width:200px;font-family:var(--mono);font-size:10px;line-height:1.7;
   letter-spacing:.04em;color:var(--muted);border-left:1px solid var(--line);padding-left:14px}
@@ -343,3 +357,58 @@ nav.main a.here::after{width:100%;background:var(--seal)}
 .post p:has(> em:only-child){font-family:var(--mono);font-size:10px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin:-2px 0 30px}
 .post p:has(> em:only-child) em{font-style:normal}
+
+/* ---------- section rail ---------- */
+.rail{position:fixed;left:clamp(10px,1.6vw,22px);top:50%;transform:translateY(-50%);z-index:70;
+  display:flex;flex-direction:column;gap:2px}
+.rail a{display:flex;align-items:center;gap:10px;padding:7px 4px;font-family:var(--mono);
+  font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);transition:color .3s}
+.rail a i{width:5px;height:5px;border:1px solid var(--faint);transform:rotate(45deg);transition:all .3s;font-style:normal}
+.rail a .lb{opacity:0;transform:translateX(-6px);transition:all .3s}
+.rail a:hover .lb,.rail a.on .lb{opacity:1;transform:none}
+.rail a.on{color:var(--seal)}
+.rail a.on i{background:var(--seal);border-color:var(--seal)}
+@media (max-width:1180px){.rail{display:none}}
+
+/* ---------- button: sliding fill ---------- */
+.btn{position:relative;overflow:hidden;z-index:1}
+.btn::before{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s cubic-bezier(.65,0,.35,1);z-index:-1}
+.btn:hover{background:transparent;color:var(--paper)}
+.btn:hover::before{transform:scaleX(1)}
+.btn.seal::before{background:var(--seal)}
+.btn.seal:hover{background:transparent;color:#fff}
+
+/* ---------- footer signature ---------- */
+.sig{border-top:1px solid var(--line);padding:clamp(44px,7vw,80px) clamp(18px,4vw,44px) 30px;text-align:center}
+.sig .pre{font-family:var(--mono);font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--faint)}
+.sig .name{font-family:var(--disp);font-style:italic;font-weight:500;font-size:clamp(30px,5vw,52px);margin:14px 0 6px;position:relative;display:inline-block}
+.sig .name::after{content:"";position:absolute;left:8%;right:6%;bottom:-6px;height:1.5px;background:var(--seal);
+  transform:scaleX(0);transform-origin:left;transition:transform .8s cubic-bezier(.65,0,.35,1)}
+.sig:hover .name::after,.sig .name.drawn::after{transform:scaleX(1)}
+.sig .post-title{font-family:var(--mono);font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+
+/* markdown coverage inside articles */
+.post a{color:var(--seal);border-bottom:1px solid color-mix(in srgb,var(--seal) 45%,transparent);transition:border-color .25s}
+.post a:hover{border-color:var(--seal)}
+.post h2,.post h3{font-family:var(--disp);font-weight:560;letter-spacing:-.01em;line-height:1.2;margin:40px 0 14px}
+.post h2{font-size:clamp(24px,3.2vw,32px)}
+.post h3{font-size:clamp(20px,2.6vw,25px)}
+.post ul,.post ol{margin:0 0 26px;padding-left:6px;list-style:none;font-size:16.5px;line-height:1.8;color:var(--ink)}
+.post ul li,.post ol li{position:relative;padding-left:26px;margin-bottom:10px}
+.post ul li::before{content:"\00a7";position:absolute;left:0;top:1px;font-family:var(--mono);font-size:12px;color:var(--seal)}
+.post ol{counter-reset:oli}
+.post ol li{counter-increment:oli}
+.post ol li::before{content:counter(oli,decimal-leading-zero);position:absolute;left:0;top:2px;font-family:var(--mono);font-size:11px;color:var(--seal)}
+.post hr{border:0;height:1px;background:var(--line);margin:40px auto;width:60%}
+.post code{font-family:var(--mono);font-size:.85em;background:var(--card);border:1px solid var(--line);padding:2px 6px;color:var(--seal)}
+.post strong{font-weight:600;color:var(--ink)}
+.post em{color:inherit}
+#rBody.poem p{margin-bottom:30px}
+#rBody.poem p:first-of-type::first-letter{font-family:inherit;font-size:inherit;float:none;padding:0}
+
+/* article page head (replaces ad-hoc inline sizing) */
+.article-head{padding:150px clamp(18px,4vw,44px) 26px;max-width:760px;margin:0 auto}
+.article-head .no{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--seal)}
+.article-head h1{font-family:var(--disp);font-weight:560;font-size:clamp(32px,5.4vw,58px);letter-spacing:-.02em;line-height:1.06;margin-top:12px}
+.article-head h1 em{font-style:italic;font-weight:430;color:var(--seal)}

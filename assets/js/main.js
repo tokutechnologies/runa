@@ -82,6 +82,35 @@
     pb.style.transform = "scaleX(" + p + ")";
   }, { passive: true });
 
+  /* header scrolled state */
+  var hd = document.querySelector("header");
+  function onScr() { hd && hd.classList.toggle("scrolled", scrollY > 24); }
+  addEventListener("scroll", onScr, { passive: true }); onScr();
+
+  /* section rail scrollspy (index) */
+  var rail = document.getElementById("rail");
+  if (rail && "IntersectionObserver" in window) {
+    var links = rail.querySelectorAll("a");
+    var spy = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (l) {
+            l.classList.toggle("on", l.getAttribute("href") === "#" + e.target.id);
+          });
+        }
+      });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+    document.querySelectorAll("section[id]").forEach(function (s) { spy.observe(s); });
+  }
+
+  /* footer signature underline draws when visible */
+  var sig = document.querySelector(".sig .name");
+  if (sig && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (es, o) {
+      es.forEach(function (e) { if (e.isIntersecting) { sig.classList.add("drawn"); o.disconnect(); } });
+    }, { threshold: .6 }).observe(sig);
+  }
+
   /* reveals */
   if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (es) {
