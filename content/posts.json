@@ -58,5 +58,15 @@
     "tags": "flash fiction",
     "excerpt": "On her final day before retirement, a justice reads one more file than she was given.",
     "slug": "the-last-petition"
+  },
+  {
+    "title": "The Long Goodbye",
+    "kind": "fiction",
+    "type": "Story",
+    "date": "2016-01-17",
+    "minutes": "8",
+    "tags": "grief, family, loss, letter, father, daughter",
+    "excerpt": "A grieving father writes one final letter to his daughter, reliving the memories that made\u2014and broke\u2014their lives.",
+    "slug": "the-long-goodbye"
   }
 ]
