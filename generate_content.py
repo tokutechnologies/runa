@@ -9,6 +9,7 @@ import json, os, re
 
 def parse(path):
     raw = open(path, encoding="utf-8").read()
+    raw = raw.lstrip("\ufeff").replace("\r\n", "\n")
     m = re.match(r"---\n(.*?)\n---\n", raw, re.S)
     meta = {}
     if m:

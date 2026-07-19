@@ -8,7 +8,7 @@
   fetch("content/posts.json", { cache: "no-store" })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })
     .then(function (all) {
-      var posts = all.filter(function (p) { return p.kind === cfg.kind; });
+      var posts = all.filter(function (p) { return String(p.kind||"").trim().toLowerCase() === cfg.kind; });
       if (!posts.length) { note.hidden = false; return; }
 
       /* filter chips from the type field */
@@ -20,7 +20,7 @@
         var poem = (p.type || "").toLowerCase() === "poem";
         return '<a class="wcard' + (poem ? " poemcard" : "") + '" data-t="' + (p.type || "") + '" href="read.html?slug=' + p.slug + '">' +
           '<span class="k">' + (p.type || p.kind) + "</span>" +
-          "<h3>" + p.title + "</h3>" +
+          "<h3>" + (p.title || p.slug) + "</h3>" +
           "<p>" + (poem ? "<em>" + (p.excerpt || "") + "</em>" : (p.excerpt || "")) + "</p>" +
           '<span class="m"><span>' + fmt(p.date) + "</span><span>" + (p.minutes || "—") + " min</span></span></a>";
       }
@@ -30,7 +30,7 @@
         var f = posts[0];
         feat.innerHTML = '<a class="bfeat" href="read.html?slug=' + f.slug + '" data-t="' + (f.type || "") + '">' +
           '<div class="tx"><span class="k">' + (f.type || f.kind) + " &#183; latest</span>" +
-          "<h2>" + f.title + "</h2><p>" + (f.excerpt || "") + "</p>" +
+          "<h2>" + (f.title || f.slug) + "</h2><p>" + (f.excerpt || "") + "</p>" +
           '<span class="m">' + fmt(f.date) + " &#183; " + (f.minutes || "—") + ' min read</span></div>' +
           '<div class="side"><span class="st">' + (cfg.kind === "fiction" ? "Fresh ink" : "Exhibit A") + "</span></div></a>";
       }
