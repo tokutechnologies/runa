@@ -60,13 +60,23 @@
     "slug": "the-last-petition"
   },
   {
+    "title": "Memory Lane",
+    "kind": "fiction",
+    "type": "Story",
+    "date": "2016-05-15",
+    "minutes": "7",
+    "tags": "love, friendship, lgbtq, memory, acceptance, family",
+    "excerpt": "Eight years after losing the woman she loved, Kabita agrees to one final meeting that forces both of them to confront the past.",
+    "slug": "memory-lane"
+  },
+  {
     "title": "The Long Goodbye",
     "kind": "fiction",
     "type": "Story",
     "date": "2016-01-17",
     "minutes": "8",
-    "tags": "grief, family, loss, letter, father, daughter",
-    "excerpt": "A grieving father writes one final letter to his daughter, reliving the memories that made\u2014and broke\u2014their lives.",
+    "tags": "grief, family, father, daughter, loss, letter",
+    "excerpt": "A grieving father writes one last letter to his daughter before choosing to reunite with his family in death.",
     "slug": "the-long-goodbye"
   }
 ]
