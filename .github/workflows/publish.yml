@@ -1,0 +1,22 @@
+# Optional: rebuilds content/posts.json automatically whenever a .md changes,
+# so publishing = just committing the markdown file. Requires nothing else.
+name: Build content index
+on:
+  push:
+    paths:
+      - "content/**.md"
+permissions:
+  contents: write
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 generate_content.py
+      - name: Commit posts.json if changed
+        run: |
+          git config user.name "content-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/posts.json
+          git diff --cached --quiet || git commit -m "chore: rebuild posts.json"
+          git push
