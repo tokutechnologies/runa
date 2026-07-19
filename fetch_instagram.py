@@ -5,7 +5,7 @@ Instagram → content/instagram.json (and optionally self-hosted images).
 Instagram no longer offers anonymous public-feed access, so pick a source:
 
 A) Behold.so feed (recommended, free tier, ~3 min setup, no code):
-   1. behold.so → sign in with the Instagram account (@storiesofautumn)
+   1. behold.so → sign in with the Instagram account (@stormy.fables)
    2. Create a feed → copy its JSON feed URL (https://feeds.behold.so/XXXX)
    3. Run:  python3 fetch_instagram.py --behold https://feeds.behold.so/XXXX --download
 
@@ -41,7 +41,7 @@ def from_behold(feed_url, download):
         out.append({
             "image": img,
             "caption": (p.get("caption") or "")[:220],
-            "permalink": p.get("permalink", "https://instagram.com/storiesofautumn"),
+            "permalink": p.get("permalink", "https://instagram.com/stormy.fables"),
             "date": (p.get("timestamp") or "")[:10],
         })
     return out
