@@ -64,7 +64,7 @@ The `admin/` folder ships a free, open-source CMS. One-time setup:
    `python3 generate_content.py` OR keep running it locally; simplest is the
    build command with Python available, or commit posts.json from Option A.)
 
-## 📸 Instagram (@storiesofautumn)
+## 📸 Instagram (@stormy.fables)
 
 Instagram removed anonymous public-feed access in Dec 2024, so "just fetch
 the public page" is no longer possible from a browser. You have three options,
@@ -72,7 +72,7 @@ all wired in:
 
 **Live (auto-updating), ~3 minutes:** create a free feed at behold.so with
 the Instagram login, copy its JSON URL, and paste it in fiction.html:
-`window.OTR_IG={behold:"https://feeds.behold.so/XXXX", handle:"storiesofautumn"}`
+`window.OTR_IG={behold:"https://feeds.behold.so/XXXX", handle:"stormy.fables"}`
 The page then always shows the latest posts. (Behold hosts stable image URLs.)
 
 **Fetch once, fully static (your idea):**

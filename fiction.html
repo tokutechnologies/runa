@@ -50,9 +50,9 @@
 
   <!-- Instagram dispatches -->
   <section class="ig" data-rise>
-    <div class="shead" style="margin-top:70px"><span class="no">&#167;08.b</span><h2>Dispatches <em>&#64;storiesofautumn</em></h2><span class="rule"></span><span class="tag">Instagram</span></div>
+    <div class="shead" style="margin-top:70px"><span class="no">&#167;08.b</span><h2>Dispatches <em>&#64;stormy.fables</em></h2><span class="rule"></span><span class="tag">Instagram</span></div>
     <div class="iggrid" id="iggrid"><!-- rendered from content/instagram.json --></div>
-    <div class="wall"><a class="btn seal" href="https://www.instagram.com/storiesofautumn/" target="_blank" rel="noopener">Follow the dispatches &#8594;</a></div>
+    <div class="wall"><a class="btn seal" href="https://www.instagram.com/stormy.fables/" target="_blank" rel="noopener">Follow the dispatches &#8594;</a></div>
     <!--
       To embed REAL Instagram posts, replace each .igtile with Instagram's embed code:
       1) Open a post on instagram.com → ··· menu → Embed → copy the <blockquote class="instagram-media">…</blockquote>
@@ -64,7 +64,7 @@
 <footer class="fine">
   <span>&#169; 2026 RUNA MAHARJAN &#183; Kathmandu, Nepal</span>
   <span class="disc">Views expressed on this site are personal and do not represent the National Human Rights Commission of Nepal.</span>
-  <span><a href="mailto:itsrunamaharjan@gmail.com">Email</a> &nbsp;/&nbsp; <a href="#">LinkedIn</a> &nbsp;/&nbsp; <a href="https://www.instagram.com/storiesofautumn/" target="_blank" rel="noopener">Instagram</a></span>
+  <span><a href="mailto:itsrunamaharjan@gmail.com">Email</a> &nbsp;/&nbsp; <a href="#">LinkedIn</a> &nbsp;/&nbsp; <a href="https://www.instagram.com/stormy.fables/" target="_blank" rel="noopener">Instagram</a></span>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="assets/js/main.js"></script>
@@ -75,7 +75,7 @@ window.OTR_LIST={kind:"fiction",featured:true};
    - STATIC mode: leave behold null and run fetch_instagram.py (see README);
      the page then reads content/instagram.json.
    - Neither present → the placeholder tiles below stay. */
-window.OTR_IG={behold:null,handle:"storiesofautumn"};
+window.OTR_IG={behold:null,handle:"stormy.fables"};
 </script>
 <script src="assets/js/ig.js"></script>
 <script src="assets/js/listing.js"></script>
@@ -87,11 +87,11 @@ window.OTR_IG={behold:null,handle:"storiesofautumn"};
     if(p.image){
       return '<a class="igtile img" href="'+p.permalink+'" target="_blank" rel="noopener">'
         +'<img src="'+p.image+'" alt="" loading="lazy"/>'
-        +'<span class="bar"><span class="q2">'+(p.caption||"")+'</span><span class="im">@storiesofautumn &#183; '+d+'</span></span></a>';
+        +'<span class="bar"><span class="q2">'+(p.caption||"")+'</span><span class="im">@stormy.fables &#183; '+d+'</span></span></a>';
     }
     return '<a class="igtile" href="'+p.permalink+'" target="_blank" rel="noopener">'
       +'<span class="q">&#8220;'+(p.caption||"")+'&#8221;</span>'
-      +'<span class="im">@storiesofautumn &#183; '+d+'</span></a>';
+      +'<span class="im">@stormy.fables &#183; '+d+'</span></a>';
   }
   fetch("content/instagram.json",{cache:"no-store"})
     .then(function(r){if(!r.ok)throw 0;return r.json();})
