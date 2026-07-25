@@ -17,6 +17,7 @@
     "minutes": "6",
     "tags": "detention, monitoring",
     "excerpt": "Monitoring detention means reading the registry \u2014 and then reading the silences between its lines.",
+    "image": "assets/uploads/ledger.svg",
     "slug": "what-a-prison-ledger-doesnt-say"
   },
   {
@@ -28,6 +29,17 @@
     "tags": "AI, digital rights",
     "excerpt": "AI governance is a human-rights question wearing a technology costume. Notes from the UNESCO panel table.",
     "slug": "the-algorithm-will-see-you-now"
+  },
+  {
+    "title": "The Hotel",
+    "kind": "fiction",
+    "type": "Story",
+    "date": "2017-02-19",
+    "minutes": "15",
+    "tags": "Fiction, Dreams, RunaWrites",
+    "excerpt": "",
+    "image": "assets/uploads/the-hotel-1.jpeg",
+    "slug": "the-hotel"
   },
   {
     "title": "Memory Lane",

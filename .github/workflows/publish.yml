@@ -1,40 +1,35 @@
-name: Build content
-
+# Optional: rebuilds content/posts.json automatically whenever a .md changes,
+# so publishing = just committing the markdown file. Requires nothing else.
+name: Build content index
 on:
   push:
     paths:
       - "content/**.md"
-  schedule:
-    - cron: "0 */6 * * *"   # every 6 hours
-  workflow_dispatch:
-
 permissions:
   contents: write
-
+  actions: write
 jobs:
-  build:
+  index:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Generate posts index
-        run: python3 generate_content.py
-
-      - name: Fetch Instagram
-        run: |
-          python3 fetch_instagram.py \
-            --behold "${{ secrets.BEHOLD_FEED_URL }}" \
-            --download
-
-      - name: Commit generated files
+      - run: python3 generate_content.py
+      - name: Commit posts.json if changed
+        id: commit
         run: |
           git config user.name "content-bot"
           git config user.email "actions@users.noreply.github.com"
-
           git add content/posts.json
-          git add content/instagram.json
-          git add assets/ig
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "chore: rebuild posts.json"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref ${{ github.ref_name }}
 
-          git diff --cached --quiet || git commit -m "chore: update generated content"
-          git push

@@ -1,0 +1,42 @@
+# Deploys this static site to GitHub Pages using the current, actively
+# maintained Pages Actions (no Jekyll involved at all — this replaces
+# GitHub's legacy "pages build and deployment" pipeline, which is what was
+# producing the Node.js 20 deprecation warning and the failing "build" job).
+#
+# One-time setup required: repo Settings -> Pages -> "Build and deployment"
+# -> Source -> switch from "Deploy from a branch" to "GitHub Actions".
+# After that, this workflow runs on every push to main and Pages stops
+# running its own hidden Jekyll job entirely.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

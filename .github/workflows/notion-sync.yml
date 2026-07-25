@@ -1,0 +1,59 @@
+# Syncs published posts from a Notion database into content/*.md, rebuilds
+# the post index, and commits the result. Runs hourly, on demand from the
+# Actions tab ("Run workflow"), or instantly if you wire a webhook to send
+# a repository_dispatch event (see README "Triggering without cron").
+name: Sync content from Notion
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # every hour, on the hour — change to taste
+  workflow_dispatch: {}    # adds a manual "Run workflow" button
+  repository_dispatch:
+    types: [notion-update] # lets an external webhook (e.g. via Make/Zapier) trigger this instantly
+
+permissions:
+  contents: write
+  actions: write          # needed to hand off to the deploy workflow below
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch from Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+        run: python3 sync_notion.py
+
+      - name: Rebuild post index
+        run: python3 generate_content.py
+
+      - name: Commit changes, if any
+        id: commit
+        run: |
+          git config user.name "notion-sync-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/ assets/uploads/
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "content: sync from Notion"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # A push made with the default token does NOT trigger pages.yml's
+      # own push trigger (GitHub blocks that to prevent workflow loops),
+      # so we hand off explicitly — this exception IS allowed.
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref ${{ github.ref_name }}
+
