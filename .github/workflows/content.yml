@@ -1,0 +1,105 @@
+# One pipeline, three ways to start it:
+#   - push to main       (e.g. merging a PR)          -> fetch + rebuild + deploy
+#   - schedule            (every 3 hours by default)  -> fetch + rebuild + deploy
+#   - workflow_dispatch    (the "Run workflow" button) -> fetch + rebuild + deploy
+#
+# Every run: pulls published posts from Notion, pulls the latest Instagram
+# posts (if configured — see below), rebuilds content/posts.json, commits
+# anything new, then deploys the site to GitHub Pages. Always deploys, even
+# if nothing new was found, so the live site always matches what's on main.
+#
+# Replaces the older notion-sync.yml / publish.yml / pages.yml — delete
+# those three once this file is in place (see README "Automation" section).
+name: Fetch content and deploy
+
+on:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "0 */3 * * *"   # every 3 hours — change the "*/3" to taste
+  workflow_dispatch: {}      # adds a manual "Run workflow" button
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch from Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ vars.NOTION_DATABASE_ID }}
+        run: python3 sync_notion.py
+
+      # Optional — runs only if you've set one of these two up (see README).
+      # Neither set -> prints a notice and moves on; doesn't fail the run.
+      - name: Fetch from Instagram
+        env:
+          BEHOLD_FEED_URL: ${{ vars.BEHOLD_FEED_URL }}
+          IG_GRAPH_TOKEN: ${{ secrets.IG_GRAPH_TOKEN }}
+        run: |
+          if [ -n "$BEHOLD_FEED_URL" ]; then
+            python3 fetch_instagram.py --behold "$BEHOLD_FEED_URL" --download
+          elif [ -n "$IG_GRAPH_TOKEN" ]; then
+            python3 fetch_instagram.py --token "$IG_GRAPH_TOKEN" --download
+          else
+            echo "No BEHOLD_FEED_URL or IG_GRAPH_TOKEN set — skipping Instagram fetch."
+          fi
+
+      - name: Rebuild post index
+        run: python3 generate_content.py
+
+      - name: Commit changes, if any
+        id: commit
+        run: |
+          git config user.name "content-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for p in content/ assets/uploads/ assets/ig/; do
+            [ -e "$p" ] && git add "$p"
+          done
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing new from Notion or Instagram."
+          else
+            git commit -m "content: fetch from Notion/Instagram"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  deploy:
+    needs: fetch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      # ref: main (not the SHA that triggered this run) so we pick up the
+      # fetch job's own commit above, if it made one.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -80,12 +80,69 @@ The page then always shows the latest posts. (Behold hosts stable image URLs.)
     # or with an Instagram Graph API token (professional account):
     python3 fetch_instagram.py --token YOUR_TOKEN --download
 This writes content/instagram.json and saves the images into assets/ig/ —
-everything self-hosted, nothing expires. Re-run whenever you want to refresh.
+everything self-hosted, nothing expires. Re-run whenever you want to refresh,
+or let the "⚙️ Automation" section below run it for you automatically.
 (--download matters with --token: raw Graph API image URLs expire.)
 
 **Manual:** content/instagram.json is plain JSON — you can also write it by
 hand (image, caption, permalink, date). No file → the styled placeholder
 tiles remain. Real per-post embeds are also documented inside fiction.html.
+
+
+## ⚙️ Automation: fetching content & deploying (GitHub Actions)
+
+One workflow, `.github/workflows/content.yml`, does everything:
+
+1. Pulls published posts from Notion (`sync_notion.py`)
+2. Pulls the latest Instagram posts, if configured (`fetch_instagram.py --download`) — see below
+3. Rebuilds `content/posts.json` (`generate_content.py`)
+4. Commits anything new
+5. Deploys the site to GitHub Pages
+
+It runs on three triggers, all doing the same full pipeline:
+- **Push to `main`** (e.g. merging a PR) — also refreshes Notion/Instagram content, not just deploys your code change
+- **Schedule** — every 3 hours by default; edit the `cron:` line in the file to change it
+- **Manual** — Actions tab → "Fetch content and deploy" → **Run workflow** (works from the GitHub mobile app too)
+
+### One-time setup
+Repo → **Settings → Secrets and variables → Actions**:
+
+| Name | Kind | Required for |
+|---|---|---|
+| `NOTION_TOKEN` | Secret | Notion sync |
+| `NOTION_DATABASE_ID` | Variable | Notion sync |
+| `BEHOLD_FEED_URL` | Variable | Instagram fetch (if using Behold — recommended) |
+| `IG_GRAPH_TOKEN` | Secret | Instagram fetch (if using the Graph API instead) |
+
+Instagram is optional: if neither `BEHOLD_FEED_URL` nor `IG_GRAPH_TOKEN` is set,
+that step prints a notice and skips — Notion sync and deployment still run fine.
+
+Also required once: **Settings → Pages → Build and deployment → Source →
+"GitHub Actions"** (not "Deploy from a branch" — see the `.nojekyll` note below
+for why the branch-based option causes problems here).
+
+### Note on `.nojekyll`
+Keep the empty `.nojekyll` file at the repo root regardless of the above.
+GitHub's classic Pages pipeline runs Jekyll, which treats any file starting
+with `---` front matter — i.e. every post in `content/` — as a page to
+transform, so the raw `.md` files 404 on the live site. `.nojekyll` (and,
+better, the "GitHub Actions" Pages source above) avoids that entirely.
+
+### Triggering instantly instead of waiting for the schedule
+Beyond the manual button above:
+- **One-tap phone shortcut, no third-party service:** a fine-grained PAT
+  (scoped to just this repo, Actions: read/write) plus an iOS Shortcut /
+  Android equivalent that sends
+  `POST https://api.github.com/repos/<owner>/<repo>/actions/workflows/content.yml/dispatches`
+  with `Authorization: Bearer <token>` and body `{"ref":"main"}`.
+- **Event-driven from Notion:** Notion added native database webhooks in
+  2026 (paid plans) — a "Status changed to Published" automation can POST
+  to a free Make/Zapier/Pipedream scenario, which forwards an authenticated
+  request to `POST https://api.github.com/repos/<owner>/<repo>/dispatches`
+  with body `{"event_type":"notion-update"}`. Add
+  `repository_dispatch: {types: [notion-update]}` to content.yml's `on:`
+  block to listen for it. On Notion's free plan, use Make/Zapier's own
+  "Watch Database Items" trigger instead (polls every 1–15 min).
 
 ## 🖼 Images in posts
 
